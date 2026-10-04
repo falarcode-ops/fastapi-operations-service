@@ -1,0 +1,22 @@
+{
+  "name": "Coralis CRM",
+  "short_name": "Coralis",
+  "description": "Dashboard de Administración del CRM Coralis by AlaCor",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#00f2fe",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

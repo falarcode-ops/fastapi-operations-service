@@ -1,0 +1,225 @@
+/* ==========================================================================
+   Coralis CRM — Chat & Bot Assistant Module (v12.1.0)
+   Encapsulated CSS for Bot Sessions, Conversation Threads & Real-Time Replies
+   ========================================================================== */
+
+/* Chat Main Layout Container */
+.chat-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    height: calc(100vh - 240px);
+    min-height: 420px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+    background: var(--bg-card, #131722);
+    border-radius: var(--radius-lg, 12px);
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Chat Sidebar (Session List & Controls) */
+.chat-sidebar {
+    border-right: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+    padding: 14px 10px 14px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* Scrollable Session List */
+.session-list {
+    flex: 1 1 auto;
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+    max-height: calc(100vh - 340px);
+    min-height: 200px;
+    padding-right: 6px;
+    padding-bottom: 30px;
+    scrollbar-width: auto !important;
+    scrollbar-color: var(--accent-cyan, #00f2fe) rgba(0, 0, 0, 0.3);
+}
+
+/* WebKit Scrollbar Styling (Chrome, Edge, Safari, Opera) */
+.session-list::-webkit-scrollbar {
+    width: 12px !important;
+    display: block !important;
+}
+
+.session-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.25) !important;
+    border-radius: 6px;
+}
+
+.session-list::-webkit-scrollbar-thumb {
+    background: var(--accent-cyan, #00f2fe) !important;
+    border-radius: 6px;
+    border: 2px solid rgba(0, 0, 0, 0.25);
+}
+
+.session-list::-webkit-scrollbar-thumb:hover {
+    background: #38bdf8 !important;
+}
+
+/* Session Item Cards */
+.session-item {
+    background: var(--status-bg, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.06));
+    border-radius: var(--radius-md, 8px);
+    padding: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: var(--transition-fast, all 0.2s ease);
+}
+
+.session-item:hover, .session-item.active {
+    border-color: var(--accent-cyan, #00f2fe);
+    background: rgba(0, 242, 254, 0.05);
+}
+
+.session-item h4 {
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.session-item span {
+    font-size: 0.7rem;
+    color: var(--text-secondary, #94a3b8);
+}
+
+/* Chat Main Conversation Area */
+.chat-main-area {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-card, #131722);
+}
+
+.chat-header-bar {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+    background: var(--bg-card, #131722);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.chat-body {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: auto;
+    gap: 14px;
+    flex: 1;
+}
+
+.chat-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+
+.chat-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-secondary, #94a3b8);
+    gap: 14px;
+    text-align: center;
+    padding: 20px;
+}
+
+.chat-empty-state .empty-icon {
+    font-size: 3rem;
+    opacity: 0.8;
+}
+
+/* Chat Message Bubbles */
+.msg {
+    display: flex;
+    flex-direction: column;
+    max-width: 75%;
+    padding: 12px 16px;
+    border-radius: var(--radius-md, 8px);
+    font-size: 0.88rem;
+    line-height: 1.45;
+    word-break: break-word;
+}
+
+.msg.user {
+    align-self: flex-end;
+    background-color: var(--accent-violet, #8b5cf6);
+    color: #fff;
+    border-bottom-right-radius: 2px;
+}
+
+.msg.bot {
+    align-self: flex-start;
+    background-color: var(--msg-bot-bg, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+    border-bottom-left-radius: 2px;
+}
+
+.msg-meta {
+    font-size: 0.68rem;
+    opacity: 0.75;
+    margin-top: 5px;
+    align-self: flex-end;
+}
+
+/* Reply Input Bar */
+.chat-reply-bar {
+    padding: 14px 20px 18px 20px;
+    border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+    background: var(--bg-card, #131722);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Responsive Breakpoints */
+@media (max-height: 800px) {
+    .chat-layout {
+        height: calc(100vh - 170px) !important;
+    }
+    .session-list {
+        max-height: calc(100vh - 270px) !important;
+    }
+}
+
+@media (max-height: 700px) {
+    .chat-layout {
+        height: calc(100vh - 140px) !important;
+    }
+    .session-list {
+        max-height: calc(100vh - 240px) !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .chat-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: 500px;
+    }
+    .chat-sidebar {
+        max-height: 350px;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+    }
+    .session-list {
+        max-height: 260px !important;
+    }
+}

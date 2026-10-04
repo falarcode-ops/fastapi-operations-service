@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio CRM - Servicios Profesionales</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased flex h-screen overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between shrink-0 shadow-xl">
+        <div>
+            <!-- Brand Header -->
+            <div class="p-6 border-b border-slate-800 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-lg text-white shadow-md">
+                    P
+                </div>
+                <div>
+                    <h1 class="font-bold text-base tracking-wide text-white leading-tight">Portfolio CRM</h1>
+                    <span class="text-xs text-indigo-400 font-medium tracking-wider uppercase">Servicios Profesionales</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="p-4 space-y-1.5">
+                <button onclick="switchTab('proposals')" id="nav-proposals" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all bg-indigo-600 text-white shadow-sm">
+                    <i data-lucide="kanban" class="w-4 h-4"></i>
+                    <span>Propuestas & Pipeline</span>
+                </button>
+                <button onclick="switchTab('customers')" id="nav-customers" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
+                    <i data-lucide="building-2" class="w-4 h-4"></i>
+                    <span>Clientes & Aliados</span>
+                </button>
+                <button onclick="switchTab('social')" id="nav-social" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
+                    <i data-lucide="share-2" class="w-4 h-4"></i>
+                    <span>Publicador LinkedIn</span>
+                </button>
+                <button onclick="switchTab('logs')" id="nav-logs" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
+                    <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+                    <span>Bitácora de Notas</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Footer / Environment Badge -->
+        <div class="p-4 border-t border-slate-800 text-xs text-slate-500 space-y-1">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-slate-300 font-medium">PostgreSQL: portfolio</span>
+            </div>
+            <p>API Puerto 8020 | N8N Listo</p>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 flex flex-col overflow-y-auto">
+        <!-- Top bar -->
+        <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-0 z-10">
+            <div>
+                <h2 id="page-title" class="text-xl font-bold text-slate-900">Pipeline de Propuestas</h2>
+                <p id="page-desc" class="text-xs text-slate-500">Gestión de oportunidades comerciales y consultoría</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="openModal()" id="btn-action" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2 rounded-lg shadow-sm transition">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span id="btn-action-text">Nueva Propuesta</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Dynamic Content Body -->
+        <div class="p-8 flex-1">
+            <!-- TAB: PROPOSALS -->
+            <section id="tab-proposals" class="space-y-6">
+                <!-- KPI Bar -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
+                        <span class="text-xs text-slate-500 font-medium">Propuestas Activas</span>
+                        <div class="text-2xl font-bold text-slate-900 mt-1" id="kpi-active">0</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
+                        <span class="text-xs text-slate-500 font-medium">En Negociación</span>
+                        <div class="text-2xl font-bold text-amber-600 mt-1" id="kpi-negotiation">0</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
+                        <span class="text-xs text-slate-500 font-medium">Ganadas / Aprobadas</span>
+                        <div class="text-2xl font-bold text-emerald-600 mt-1" id="kpi-won">0</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
+                        <span class="text-xs text-slate-500 font-medium">Valor Total Pipeline</span>
+                        <div class="text-2xl font-bold text-indigo-600 mt-1" id="kpi-total-val">$0</div>
+                    </div>
+                </div>
+
+                <!-- Proposals Table / Cards -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                        <h3 class="font-semibold text-slate-900 text-sm">Oportunidades de Servicios Profesionales</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-slate-600">
+                            <thead class="bg-slate-50 text-xs uppercase font-semibold text-slate-500 border-b border-slate-200">
+                                <tr>
+                                    <th class="px-6 py-3">Código</th>
+                                    <th class="px-6 py-3">Cliente / Empresa</th>
+                                    <th class="px-6 py-3">Proyecto / Servicio</th>
+                                    <th class="px-6 py-3">Honorarios</th>
+                                    <th class="px-6 py-3">Estado</th>
+                                    <th class="px-6 py-3 text-right">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="proposals-table-body" class="divide-y divide-slate-100">
+                                <tr>
+                                    <td colspan="6" class="px-6 py-8 text-center text-slate-400">Cargando propuestas...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: CUSTOMERS -->
+            <section id="tab-customers" class="hidden space-y-6">
+                <div class="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                        <h3 class="font-semibold text-slate-900 text-sm">Empresas y Clientes de Portafolio</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-slate-600">
+                            <thead class="bg-slate-50 text-xs uppercase font-semibold text-slate-500 border-b border-slate-200">
+                                <tr>
+                                    <th class="px-6 py-3">Identificador</th>
+                                    <th class="px-6 py-3">Razón Social / Nombre</th>
+                                    <th class="px-6 py-3">Sector</th>
+                                    <th class="px-6 py-3">Estado</th>
+                                    <th class="px-6 py-3">Contacto</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customers-table-body" class="divide-y divide-slate-100">
+                                <tr>
+                                    <td colspan="5" class="px-6 py-8 text-center text-slate-400">Cargando clientes...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: SOCIAL PUBLISHER -->
+            <section id="tab-social" class="hidden space-y-6">
+                <div class="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                        <h3 class="font-semibold text-slate-900 text-sm">Publicaciones en LinkedIn Personal</h3>
+                        <span class="text-xs bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full font-medium">N8N Polling Activo</span>
+                    </div>
+                    <div class="p-6">
+                        <div id="social-posts-list" class="space-y-4">
+                            <p class="text-slate-400 text-sm">Cargando publicaciones...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: LOGS -->
+            <section id="tab-logs" class="hidden space-y-6">
+                <div class="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-100">
+                        <h3 class="font-semibold text-slate-900 text-sm">Historial de Interacciones Comerciales</h3>
+                    </div>
+                    <div class="p-6">
+                        <div id="logs-list" class="space-y-4">
+                            <p class="text-slate-400 text-sm">Cargando bitácora...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- MODAL NUEVA PROPUESTA -->
+    <div id="proposal-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl w-full max-w-lg p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-slate-900 text-base">Registrar Nueva Propuesta</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form id="form-new-proposal" onsubmit="handleCreateProposal(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Cliente / Empresa</label>
+                    <input type="text" id="prop-client" required class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden" placeholder="Ej. Constructora ABC o Juan Pérez">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">NIT o ID</label>
+                    <input type="text" id="prop-nit" required class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden" placeholder="Ej. 900123456 o CC12345">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Título del Servicio</label>
+                    <input type="text" id="prop-title" required class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden" placeholder="Ej. Consultoría en Optimización de Procesos">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nivel de Servicio (Tier Portfolio)</label>
+                    <select id="prop-tier" onchange="applyTierPreset(this.value)" class="w-full text-sm border border-indigo-200 bg-indigo-50/40 rounded-lg px-3 py-2 font-medium text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden">
+                        <option value="">-- Seleccionar Nivel / Preconfigurado --</option>
+                        <option value="tier1">Tier 1: Quick-Win Audit ($600 USD / $2.2M COP)</option>
+                        <option value="tier2">Tier 2: Estandarización & Automatización Core ($2,200 USD / $7.5M COP)</option>
+                        <option value="tier3">Tier 3: Líder Fraccional de Operaciones ($750 USD/mes / $2.5M COP/mes)</option>
+                        <option value="custom">Personalizado / Otro</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Honorarios ($ USD o COP)</label>
+                        <input type="number" id="prop-value" class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden" placeholder="600">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Estado</label>
+                        <select id="prop-status" class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden">
+                            <option value="CONTACTO_INICIAL">Contacto Inicial</option>
+                            <option value="DIAGNOSTICO">Diagnóstico</option>
+                            <option value="PROPUESTA_ENVIADA">Propuesta Enviada</option>
+                            <option value="EN_NEGOCIACION">En Negociación</option>
+                            <option value="GANADA">Aceptada / Ganada</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Alcance / Resumen</label>
+                    <textarea id="prop-scope" rows="3" class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden" placeholder="Detalles de la asesoría o entregables..."></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 rounded-lg text-sm bg-indigo-600 hover:bg-indigo-700 text-white font-medium shadow-sm">Guardar Propuesta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT LOGIC -->
+    <script>
+        let currentTab = 'proposals';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            ['proposals', 'customers', 'social', 'logs'].forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                const btn = document.getElementById(`nav-${t}`);
+                if (t === tab) {
+                    el.classList.remove('hidden');
+                    btn.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
+                    btn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
+                } else {
+                    el.classList.add('hidden');
+                    btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm');
+                    btn.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
+                }
+            });
+
+            // Update title
+            const titles = {
+                proposals: { title: 'Pipeline de Propuestas', desc: 'Gestión de oportunidades de consultoría y servicios', btn: 'Nueva Propuesta' },
+                customers: { title: 'Clientes & Contactos', desc: 'Empresas, personas y aliados estratégicos', btn: 'Nuevo Cliente' },
+                social: { title: 'Publicador LinkedIn Personal', desc: 'Contenidos de marca personal y liderazgo de opinión', btn: 'Nueva Publicación' },
+                logs: { title: 'Bitácora de Interacciones', desc: 'Notas de reuniones, llamadas y compromisos', btn: 'Nueva Nota' }
+            };
+            document.getElementById('page-title').innerText = titles[tab].title;
+            document.getElementById('page-desc').innerText = titles[tab].desc;
+            document.getElementById('btn-action-text').innerText = titles[tab].btn;
+
+            loadTabData(tab);
+        }
+
+        async function loadTabData(tab) {
+            if (tab === 'proposals') loadProposals();
+            if (tab === 'customers') loadCustomers();
+            if (tab === 'social') loadSocial();
+            if (tab === 'logs') loadLogs();
+        }
+
+        async function loadProposals() {
+            try {
+                const res = await fetch('/api/proposals');
+                const list = await res.json();
+                const tbody = document.getElementById('proposals-table-body');
+                
+                let active = 0, negotiation = 0, won = 0, totalVal = 0;
+
+                if (!list || list.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400">No hay propuestas registradas aún. Haz clic en "Nueva Propuesta" para iniciar.</td></tr>`;
+                } else {
+                    tbody.innerHTML = list.map(p => {
+                        const val = parseFloat(p.estimated_value || 0);
+                        if (p.status === 'EN_NEGOCIACION') negotiation++;
+                        else if (p.status === 'GANADA') won++;
+                        else if (p.status !== 'PERDIDA') active++;
+                        totalVal += val;
+
+                        const badgeColors = {
+                            CONTACTO_INICIAL: 'bg-slate-100 text-slate-700',
+                            DIAGNOSTICO: 'bg-blue-100 text-blue-700',
+                            PROPUESTA_ENVIADA: 'bg-indigo-100 text-indigo-700',
+                            EN_NEGOCIACION: 'bg-amber-100 text-amber-700',
+                            GANADA: 'bg-emerald-100 text-emerald-700',
+                            PERDIDA: 'bg-rose-100 text-rose-700'
+                        };
+
+                        return `
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="px-6 py-4 font-mono font-medium text-indigo-600 text-xs">${p.proposal_number}</td>
+                                <td class="px-6 py-4 font-medium text-slate-900">${p.client_name}</td>
+                                <td class="px-6 py-4">${p.title}</td>
+                                <td class="px-6 py-4 font-semibold text-slate-900">$${val.toLocaleString()}</td>
+                                <td class="px-6 py-4">
+                                    <span class="text-xs px-2.5 py-1 rounded-full font-medium ${badgeColors[p.status] || 'bg-slate-100 text-slate-600'}">
+                                        ${p.status.replace(/_/g, ' ')}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button onclick="updateStatus(${p.id})" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold">Cambiar Estado</button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+
+                document.getElementById('kpi-active').innerText = active;
+                document.getElementById('kpi-negotiation').innerText = negotiation;
+                document.getElementById('kpi-won').innerText = won;
+                document.getElementById('kpi-total-val').innerText = `$${totalVal.toLocaleString()}`;
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        async function loadCustomers() {
+            try {
+                const res = await fetch('/api/customers');
+                const list = await res.json();
+                const tbody = document.getElementById('customers-table-body');
+                if (!list || list.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">No hay clientes registrados en este portafolio.</td></tr>`;
+                } else {
+                    tbody.innerHTML = list.map(c => `
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="px-6 py-4 font-mono text-xs text-slate-500">${c.nit}</td>
+                            <td class="px-6 py-4 font-semibold text-slate-900">${c.company_name}</td>
+                            <td class="px-6 py-4">${c.sector || 'General'}</td>
+                            <td class="px-6 py-4"><span class="text-xs px-2.5 py-1 rounded-full font-medium bg-slate-100">${c.status}</span></td>
+                            <td class="px-6 py-4 text-xs text-slate-500">${c.email || c.phone || 'Sin datos'}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        async function loadSocial() {
+            try {
+                const res = await fetch('/api/social/posts');
+                const list = await res.json();
+                const container = document.getElementById('social-posts-list');
+                if (!list || list.length === 0) {
+                    container.innerHTML = `<p class="text-slate-400 text-sm text-center py-8">No hay publicaciones de LinkedIn registradas en el portafolio.</p>`;
+                } else {
+                    container.innerHTML = list.map(p => `
+                        <div class="border border-slate-200 rounded-xl p-4 flex items-center justify-between hover:border-indigo-300 transition">
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <h4 class="font-semibold text-slate-900 text-sm">${p.title}</h4>
+                                    <span class="text-xs px-2 py-0.5 rounded-full font-medium ${p.status === 'PUBLICADO' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${p.status}</span>
+                                </div>
+                                <p class="text-xs text-slate-500 line-clamp-2">${p.base_content}</p>
+                            </div>
+                            <span class="text-xs text-slate-400 font-mono">${p.author || 'Fabian Alarcon'}</span>
+                        </div>
+                    `).join('');
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        function applyTierPreset(tier) {
+            const titleInput = document.getElementById('prop-title');
+            const valInput = document.getElementById('prop-value');
+            const scopeInput = document.getElementById('prop-scope');
+            if (tier === 'tier1') {
+                titleInput.value = 'Tier 1: Diagnóstico Operativo & Automatización de Entrada ($600 USD)';
+                valInput.value = '600';
+                scopeInput.value = 'Mapeo VSM del proceso de compras/inventario + 1 flujo crítico n8n para erradicar tareas repetitivas en hojas de cálculo.';
+            } else if (tier === 'tier2') {
+                titleInput.value = 'Tier 2: Estandarización & Automatización Integral ($2,200 USD)';
+                valInput.value = '2200';
+                scopeInput.value = 'Estandarización del procedimiento operativo + suite de hasta 4 flujos n8n/Python + Dashboard Power BI Service + 30 días de garantía técnica.';
+            } else if (tier === 'tier3') {
+                titleInput.value = 'Tier 3: Líder Fraccional de Operaciones & Telemetría ($750 USD/mes)';
+                valInput.value = '750';
+                scopeInput.value = 'Acompañamiento mensual (12-15 horas/mes) como Director Fraccional de Operaciones y Sistemas, monitoreo continuo de flujos n8n y soporte prioritario.';
+            }
+        }
+
+        async function loadLogs() {
+            try {
+                const res = await fetch('/api/logs');
+                const list = await res.json();
+                const container = document.getElementById('logs-list');
+                if (!list || list.length === 0) {
+                    container.innerHTML = `<p class="text-slate-400 text-sm text-center py-8">No hay notas de seguimiento registradas aún.</p>`;
+                } else {
+                    container.innerHTML = list.map(l => {
+                        const isN8N = l.interaction_type === 'PROSPECCION_AUTOMATICA';
+                        return `
+                        <div class="border-l-4 ${isN8N ? 'border-emerald-500 bg-emerald-50/30' : 'border-indigo-500 bg-slate-50'} p-4 rounded-r-xl space-y-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bold text-slate-800">${l.customer_nit}</span>
+                                    <span class="px-2 py-0.5 rounded-full font-medium text-xs ${isN8N ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-700'}">
+                                        ${isN8N ? '📡 Radar N8N B2B' : l.interaction_type}
+                                    </span>
+                                </div>
+                                <span class="text-slate-400">${new Date(l.occurred_at).toLocaleDateString()}</span>
+                            </div>
+                            <p class="text-sm text-slate-900 font-semibold">${l.summary || ''}</p>
+                            ${l.observations ? `
+                                <div class="bg-white/80 p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+                                    <span class="font-semibold text-slate-500 text-[11px] block uppercase tracking-wider">Pitch Consultivo:</span>
+                                    <p class="whitespace-pre-line leading-relaxed">${l.observations}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `}).join('');
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        function openModal() {
+            document.getElementById('proposal-modal').classList.remove('hidden');
+            document.getElementById('proposal-modal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('proposal-modal').classList.add('hidden');
+            document.getElementById('proposal-modal').classList.remove('flex');
+        }
+
+        async function handleCreateProposal(e) {
+            e.preventDefault();
+            const client = document.getElementById('prop-client').value;
+            const nit = document.getElementById('prop-nit').value;
+            const title = document.getElementById('prop-title').value;
+            const value = document.getElementById('prop-value').value;
+            const status = document.getElementById('prop-status').value;
+            const scope = document.getElementById('prop-scope').value;
+
+            // Ensure customer exists first
+            try {
+                await fetch('/api/customers', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nit: nit, company_name: client, status: 'PROSPECTO' })
+                });
+            } catch(e) {}
+
+            const res = await fetch('/api/proposals', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    customer_nit: nit,
+                    client_name: client,
+                    title: title,
+                    estimated_value: parseFloat(value || 0),
+                    status: status,
+                    scope_description: scope
+                })
+            });
+
+            if (res.ok) {
+                closeModal();
+                loadProposals();
+            } else {
+                alert('Error al registrar la propuesta');
+            }
+        }
+
+        async function updateStatus(id) {
+            const next = prompt('Ingresa el nuevo estado:\n- DIAGNOSTICO\n- PROPUESTA_ENVIADA\n- EN_NEGOCIACION\n- GANADA\n- PERDIDA');
+            if (next) {
+                await fetch(`/api/proposals/${id}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: next.toUpperCase().trim() })
+                });
+                loadProposals();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            loadProposals();
+        });
+    </script>
+</body>
+</html>

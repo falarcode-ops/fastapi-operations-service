@@ -1,0 +1,7 @@
+{
+  "version": "1.5.3",
+  "name": "CORALIS-PS",
+  "base_coralis_version": "12.65.1",
+  "description": "CORALIS-PS (v1.5.3): Plataforma adaptada de servicios profesionales B2B para Consultoría de Procesos, Automatización (n8n/Python) y BI (Power BI/PostgreSQL). Cockpit de desempeño y telemetría comercial 100% integrados.",
+  "updated": "2026-10-03"
+}
