@@ -160,11 +160,12 @@ Once the server is running, explore the interactive documentation:
 *Industrial Engineer | Operations, Business Process Standardization (ISO 9001) & Automation Specialist*  
 
 * **GitHub:** [@falarcode-ops](https://github.com/falarcode-ops)  
-* **LinkedIn:** [Fabián Alarcón Chávez](https://www.linkedin.com/in/fabian-alarcon-chavez/)  
-* **Email:** [fabian.alarcon@alacor.com.co](mailto:fabian.alarcon@alacor.com.co)  
+* **LinkedIn:** [Fabián Alarcón](https://www.linkedin.com/in/fabian-alarcon-alacor/)  
+* **Email:** [falarcon.apps2024@gmail.com](mailto:falarcon.apps2024@gmail.com)  
 * **Portfolio & Diagnostic:** [https://meet.google.com/tdn-ofwt-dex](https://meet.google.com/tdn-ofwt-dex)
 
 ---
 
 ## 📄 License
-This project is open-source under the [MIT License](LICENSE).
+This project is open-source and available under the terms of the [MIT License](LICENSE).  
+Copyright (c) 2026 Fabián Andrés Alarcón Chávez (`falarcode-ops`).
